@@ -21,10 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Prefer pinning an exact SDK version here (e.g., 10.0.100) to improve reproducibility.
+      # If you pin via global.json, keep this aligned with that pinned version.
       - name: Setup .NET (10)
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "10.0.x"
+          dotnet-version: "10.0.100"
           cache: true
           cache-dependency-path: |
             **/*.csproj
@@ -32,6 +34,8 @@ jobs:
             **/*.targets
             global.json
 
+      # If you commit packages.lock.json files, switch to:
+      # dotnet restore --locked-mode
       - name: Restore
         run: dotnet restore
 
@@ -67,12 +71,10 @@ jobs:
           set -euo pipefail
 
           echo "Running vulnerability check (include transitive)..."
-          # We capture output so we can both print it and gate on it.
           OUT="$(dotnet list package --vulnerable --include-transitive || true)"
 
           echo "$OUT"
 
-          # Gate: fail build if High or Critical appears in output
           if echo "$OUT" | grep -Eiq "\b(High|Critical)\b"; then
             echo "❌ Vulnerability gate failed: High/Critical vulnerabilities detected."
             exit 1
@@ -98,24 +100,18 @@ jobs:
           path: artifacts/sbom/bom.json
           if-no-files-found: error
 
-      - name: SBOM vulnerability policy gate
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          echo "Checking SBOM for High/Critical vulnerabilities..."
-
-          if grep -Eiq '"severity":\s*"(High|Critical)"' artifacts/sbom/bom.json; then
-            echo "❌ SBOM policy gate failed: High/Critical vulnerabilities detected."
-            exit 1
-          fi
-
-          echo "✅ SBOM policy gate passed."
+      # NOTE:
+      # CycloneDX SBOM usually does NOT contain vulnerability severities unless you enrich it
+      # with a vulnerability source (e.g., Dependency-Track). Keep vuln gating in "dotnet list package --vulnerable".
+      # So we intentionally removed the SBOM "severity" grep gate.
 
       - name: Generate license snapshot
         run: |
           mkdir -p artifacts/licenses
           dotnet list package --include-transitive --format json > artifacts/licenses/packages.json
+
+      - name: Ensure jq is installed
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: License policy gate
         shell: bash
@@ -126,6 +122,11 @@ jobs:
 
           POLICY_FILE="build/license-policy.json"
           PACKAGES_FILE="artifacts/licenses/packages.json"
+
+          if [ ! -f "$POLICY_FILE" ]; then
+            echo "❌ Policy file not found: $POLICY_FILE"
+            exit 1
+          fi
 
           # Extract forbidden licenses from policy
           FORBIDDEN=$(jq -r '.forbidden[]' "$POLICY_FILE")
@@ -145,40 +146,74 @@ jobs:
 
           echo "✅ License policy gate passed."
 
-      - name: Ensure jq is installed
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: Upload license snapshot
         uses: actions/upload-artifact@v4
         with:
           name: licenses
           path: artifacts/licenses/packages.json
+          if-no-files-found: error
 
-      - name: Publish artifacts
+      # -----------------------------
+      # Reproducible builds (verify)
+      # -----------------------------
+      - name: Reproducible publish #1
+        shell: bash
         run: |
-          mkdir -p artifacts/release
+          set -euo pipefail
+          rm -rf artifacts/release1 artifacts/release2
+          mkdir -p artifacts/release1 artifacts/release2
+
           dotnet publish src/Project.Api/Project.Api.csproj \
             -c Release \
-            -o artifacts/release
+            -o artifacts/release1 \
+            -p:ContinuousIntegrationBuild=true \
+            -p:Deterministic=true
 
-      - name: Generate SHA256 hashes
+      - name: Reproducible publish #2 (clean)
+        shell: bash
         run: |
-          cd artifacts/release
-          find . -type f -exec sha256sum {} \; > ../release-hashes.txt
+          set -euo pipefail
+          dotnet clean -c Release
 
-      - name: Upload release artifacts
+          dotnet publish src/Project.Api/Project.Api.csproj \
+            -c Release \
+            -o artifacts/release2 \
+            -p:ContinuousIntegrationBuild=true \
+            -p:Deterministic=true
+
+      - name: Compare SHA256 (reproducibility gate)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          (cd artifacts/release1 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > artifacts/release1.sha256
+          (cd artifacts/release2 && find . -type f -print0 | sort -z | xargs -0 sha256sum) > artifacts/release2.sha256
+
+          if ! diff -u artifacts/release1.sha256 artifacts/release2.sha256; then
+            echo "❌ Reproducibility gate failed: publish outputs differ."
+            exit 1
+          fi
+
+          echo "✅ Reproducibility gate passed: outputs are identical."
+
+      - name: Upload release artifacts (release1)
         uses: actions/upload-artifact@v4
         with:
           name: release
-          path: artifacts/release
+          path: artifacts/release1
+          if-no-files-found: error
 
-      - name: Upload hash file
+      - name: Upload reproducibility evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-hashes
-          path: artifacts/release-hashes.txt
+          name: reproducibility-evidence
+          path: |
+            artifacts/release1.sha256
+            artifacts/release2.sha256
+          if-no-files-found: warn
 
       - name: Generate SLSA provenance attestation
         uses: actions/attest-build-provenance@v1
         with:
-          subject-path: artifacts/release/**
+          subject-path: artifacts/release1/**

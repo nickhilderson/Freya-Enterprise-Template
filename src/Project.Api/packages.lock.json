@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "project.application": {
+        "type": "Project",
+        "dependencies": {
+          "Project.Domain": "[1.0.0, )"
+        }
+      },
+      "project.domain": {
+        "type": "Project"
+      },
+      "project.infrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Project.Application": "[1.0.0, )"
+        }
+      }
+    }
+  }
+}

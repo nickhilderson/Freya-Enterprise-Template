@@ -7,8 +7,19 @@
         <AnalysisLevel>latest</AnalysisLevel>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+
+        <!-- Deterministic / reproducible -->
         <Deterministic>true</Deterministic>
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+        <!-- Path stability in PDBs -->
+        <DeterministicSourcePaths>true</DeterministicSourcePaths>
+        <PathMap>$(MSBuildProjectDirectory)=/src</PathMap>
+
+        <!-- SourceLink readiness -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
 
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
