@@ -11,6 +11,7 @@ permissions:
   contents: read
   id-token: write
   attestations: write
+  pages: write
 
 jobs:
   build_test_and_gates:
@@ -236,6 +237,11 @@ jobs:
           path: evidence-pack
           if-no-files-found: error
           
+      - name: Generate SLSA provenance attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: artifacts/release1/**
+
       - name: Generate maturity badge JSON
         shell: bash
         run: |
@@ -261,8 +267,18 @@ jobs:
             "color": "${COLOR}"
           }
           EOF
-          
-      - name: Generate SLSA provenance attestation
-        uses: actions/attest-build-provenance@v1
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact (docs)
+        uses: actions/upload-pages-artifact@v3
         with:
-          subject-path: artifacts/release1/**
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        
+  concurrency:
+    group: "pages"
+    cancel-in-progress: true
