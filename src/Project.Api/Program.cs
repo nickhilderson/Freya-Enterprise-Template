@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
 
-builder.Services.AddSingleton<TimeProvider>();
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddTransient<CorrelationIdMiddleware>();
 
 var app = builder.Build();
@@ -14,7 +14,6 @@ app.UseHttpsRedirection();
 app.UseHsts();
 
 app.UseExceptionHandler();
-
 app.UseMiddleware<CorrelationIdMiddleware>();
 
 app.MapHealthChecks("/health");

@@ -29,5 +29,31 @@ namespace Project.Domain.Entities
         /// Tracks the version of the entity for concurrency and state management purposes.
         /// </summary>
         public long Version { get; protected set; } = 0;
+
+        /// <summary>
+        /// Marks the entity as created by setting the creation timestamp, the actor identifier,
+        /// and initializing the version to 1.
+        /// </summary>
+        /// <param name="time">The instance of <c>TimeProvider</c> used to retrieve the current UTC timestamp.</param>
+        /// <param name="actor">The identifier of the actor who created the entity.</param>
+        protected void MarkCreated(TimeProvider time, string actor)
+        {
+            CreatedOnUtc = time.GetUtcNow();
+            CreatedBy = actor;
+            Version = 1;
+        }
+
+        /// <summary>
+        /// Updates the modification metadata for the entity by setting the modification timestamp,
+        /// the actor identifier, and incrementing the version number.
+        /// </summary>
+        /// <param name="time">The instance of <c>TimeProvider</c> used to retrieve the current UTC timestamp.</param>
+        /// <param name="actor">The identifier of the actor who modified the entity.</param>
+        protected void MarkModified(TimeProvider time, string actor)
+        {
+            ModifiedOnUtc = time.GetUtcNow();
+            ModifiedBy = actor;
+            Version++;
+        }
     }
 }
