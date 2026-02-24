@@ -1,0 +1,1 @@
+![Maturity](https://img.shields.io/endpoint?url=https://github.com/nickhilderson/Freya-Enterprise-Template/badges/maturity.json)

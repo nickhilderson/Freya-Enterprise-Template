@@ -236,6 +236,32 @@ jobs:
           path: evidence-pack
           if-no-files-found: error
           
+      - name: Generate maturity badge JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p docs/badges
+
+          SCORE=$(jq -r '.Score' evidence-pack/maturity-report.json)
+          MAX=$(jq -r '.MaxScore' evidence-pack/maturity-report.json)
+          LEVEL=$(jq -r '.Level' evidence-pack/maturity-report.json)
+
+          # Simple color policy
+          COLOR="red"
+          if [ "$SCORE" -ge 85 ]; then COLOR="brightgreen"; \
+          elif [ "$SCORE" -ge 70 ]; then COLOR="green"; \
+          elif [ "$SCORE" -ge 50 ]; then COLOR="yellow"; \
+          elif [ "$SCORE" -ge 30 ]; then COLOR="orange"; fi
+
+          cat > docs/badges/maturity.json <<EOF
+          {
+            "schemaVersion": 1,
+            "label": "maturity",
+            "message": "${SCORE}/${MAX} (${LEVEL})",
+            "color": "${COLOR}"
+          }
+          EOF
+          
       - name: Generate SLSA provenance attestation
         uses: actions/attest-build-provenance@v1
         with:
