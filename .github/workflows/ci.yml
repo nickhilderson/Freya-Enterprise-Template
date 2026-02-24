@@ -9,6 +9,8 @@ on:
 
 permissions:
   contents: read
+  id-token: write
+  attestations: write
 
 jobs:
   build_test_and_gates:
@@ -175,3 +177,8 @@ jobs:
         with:
           name: release-hashes
           path: artifacts/release-hashes.txt
+
+      - name: Generate SLSA provenance attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: artifacts/release/**
