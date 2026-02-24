@@ -151,3 +151,27 @@ jobs:
         with:
           name: licenses
           path: artifacts/licenses/packages.json
+
+      - name: Publish artifacts
+        run: |
+          mkdir -p artifacts/release
+          dotnet publish src/Project.Api/Project.Api.csproj \
+            -c Release \
+            -o artifacts/release
+
+      - name: Generate SHA256 hashes
+        run: |
+          cd artifacts/release
+          find . -type f -exec sha256sum {} \; > ../release-hashes.txt
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: artifacts/release
+
+      - name: Upload hash file
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-hashes
+          path: artifacts/release-hashes.txt
