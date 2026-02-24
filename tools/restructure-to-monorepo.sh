@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TEMPLATE_DIR="src/Freya.Template"
+TEMPLATE_DIR="templates/Freya.Template"
 OLD_SLN="Freya.EnterpriseTemplate.sln"
 NEW_SLN_NAME="Freya.Template.sln"
 
