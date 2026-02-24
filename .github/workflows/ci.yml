@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build_test_and_gates:
+    name: Build, Test & Gates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET (10)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+          cache: true
+          cache-dependency-path: |
+            **/*.csproj
+            **/*.props
+            **/*.targets
+            global.json
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build (Release)
+        run: dotnet build -c Release --no-restore
+
+      - name: Test (Release) with TRX
+        run: dotnet test -c Release --no-build --logger "trx;LogFileName=test_results.trx" --results-directory ./artifacts/test-results
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: artifacts/test-results/**/*.trx
+          if-no-files-found: warn
+
+      - name: Dependency snapshot (transitive, JSON)
+        run: |
+          mkdir -p artifacts/dependencies
+          dotnet list package --include-transitive --format json > artifacts/dependencies/dependencies.json
+
+      - name: Upload dependency snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependencies
+          path: artifacts/dependencies/dependencies.json
+          if-no-files-found: error
+
+      - name: Vulnerability gate (fail on High/Critical)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Running vulnerability check (include transitive)..."
+          # We capture output so we can both print it and gate on it.
+          OUT="$(dotnet list package --vulnerable --include-transitive || true)"
+
+          echo "$OUT"
+
+          # Gate: fail build if High or Critical appears in output
+          if echo "$OUT" | grep -Eiq "\b(High|Critical)\b"; then
+            echo "❌ Vulnerability gate failed: High/Critical vulnerabilities detected."
+            exit 1
+          fi
+
+          echo "✅ Vulnerability gate passed (no High/Critical)."
+
+      - name: Install CycloneDX .NET tool
+        run: dotnet tool install --global CycloneDX
+
+      - name: Generate SBOM (CycloneDX JSON)
+        run: |
+          mkdir -p artifacts/sbom
+          cyclonedx . \
+            --json \
+            --output artifacts/sbom/bom.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: artifacts/sbom/bom.json
+          if-no-files-found: error
+
+      - name: SBOM vulnerability policy gate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Checking SBOM for High/Critical vulnerabilities..."
+
+          if grep -Eiq '"severity":\s*"(High|Critical)"' artifacts/sbom/bom.json; then
+            echo "❌ SBOM policy gate failed: High/Critical vulnerabilities detected."
+            exit 1
+          fi
+
+          echo "✅ SBOM policy gate passed."
