@@ -109,3 +109,45 @@ jobs:
           fi
 
           echo "✅ SBOM policy gate passed."
+
+      - name: Generate license snapshot
+        run: |
+          mkdir -p artifacts/licenses
+          dotnet list package --include-transitive --format json > artifacts/licenses/packages.json
+
+      - name: License policy gate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Checking licenses against policy..."
+
+          POLICY_FILE="build/license-policy.json"
+          PACKAGES_FILE="artifacts/licenses/packages.json"
+
+          # Extract forbidden licenses from policy
+          FORBIDDEN=$(jq -r '.forbidden[]' "$POLICY_FILE")
+
+          # Extract license info from package list (best effort)
+          LICENSES=$(jq -r '.. | .license? // empty' "$PACKAGES_FILE" | sort -u)
+
+          echo "Detected licenses:"
+          echo "$LICENSES"
+
+          for bad in $FORBIDDEN; do
+            if echo "$LICENSES" | grep -iq "$bad"; then
+              echo "❌ Forbidden license detected: $bad"
+              exit 1
+            fi
+          done
+
+          echo "✅ License policy gate passed."
+
+      - name: Ensure jq is installed
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Upload license snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: licenses
+          path: artifacts/licenses/packages.json
