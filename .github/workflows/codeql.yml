@@ -31,7 +31,7 @@ jobs:
           languages: csharp
 
       - name: Build (Release)
-        run: dotnet build -c Release
+        run: dotnet build templates/FreyaTemplate/Freya.Template.sln -c Release
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4

@@ -35,15 +35,15 @@ jobs:
             global.json
 
       # If you commit packages.lock.json files, switch to:
-      # dotnet restore --locked-mode
+      # dotnet restore templates/FreyaTemplate/Freya.Template.sln --locked-mode
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore templates/FreyaTemplate/Freya.Template.sln
 
       - name: Build (Release)
-        run: dotnet build -c Release --no-restore
+        run: dotnet build templates/FreyaTemplate/Freya.Template.sln -c Release --no-restore
 
       - name: Test (Release) with TRX
-        run: dotnet test -c Release --no-build --logger "trx;LogFileName=test_results.trx" --results-directory ./artifacts/test-results
+        run: dotnet test templates/FreyaTemplate/Freya.Template.sln -c Release --no-build --logger "trx;LogFileName=test_results.trx" --results-directory ./artifacts/test-results
 
       - name: Upload test results
         if: always()
@@ -91,7 +91,7 @@ jobs:
       - name: Generate SBOM (CycloneDX JSON)
         run: |
           mkdir -p artifacts/sbom
-          dotnet-CycloneDX Freya.EnterpriseTemplate.sln -o artifacts/sbom -fn bom.json -t
+          dotnet-CycloneDX templates/FreyaTemplate/Freya.Template.sln -o artifacts/sbom -fn bom.json -t
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
@@ -163,7 +163,7 @@ jobs:
           rm -rf artifacts/release1 artifacts/release2
           mkdir -p artifacts/release1 artifacts/release2
 
-          dotnet publish src/Project.Api/Project.Api.csproj \
+          dotnet publish templates/FreyaTemplate/src/Project.Api/Project.Api.csproj \
             -c Release \
             -o artifacts/release1 \
             -p:ContinuousIntegrationBuild=true \
@@ -175,7 +175,7 @@ jobs:
           set -euo pipefail
           dotnet clean -c Release
 
-          dotnet publish src/Project.Api/Project.Api.csproj \
+          dotnet publish templates/FreyaTemplate/src/Project.Api/Project.Api.csproj \
             -c Release \
             -o artifacts/release2 \
             -p:ContinuousIntegrationBuild=true \
