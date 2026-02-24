@@ -81,12 +81,13 @@ jobs:
       - name: Install CycloneDX .NET tool
         run: dotnet tool install --global CycloneDX
 
+      - name: Add .NET tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
       - name: Generate SBOM (CycloneDX JSON)
         run: |
           mkdir -p artifacts/sbom
-          cyclonedx . \
-            --json \
-            --output artifacts/sbom/bom.json
+          dotnet-CycloneDX Freya.EnterpriseTemplate.sln -o artifacts/sbom -fn bom.json -t
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
