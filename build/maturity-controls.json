@@ -1,0 +1,21 @@
+{
+  "levels": [
+    { "name": "Level 1 - Basic CI", "minScore": 0 },
+    { "name": "Level 2 - Security Gated", "minScore": 30 },
+    { "name": "Level 3 - Supply Chain Transparent", "minScore": 50 },
+    { "name": "Level 4 - Integrity Verified", "minScore": 70 },
+    { "name": "Level 5 - Provenance & Attested", "minScore": 85 }
+  ],
+  "controls": [
+    { "id": "sbom", "name": "SBOM present", "evidenceName": "SBOM", "required": true, "points": 15 },
+    { "id": "deps", "name": "Dependency inventory present", "evidenceName": "Dependencies", "required": true, "points": 10 },
+    { "id": "licenses", "name": "License inventory present", "evidenceName": "Licenses", "required": true, "points": 10 },
+
+    { "id": "manifest", "name": "Evidence manifest generated", "evidenceName": "Manifest", "required": true, "points": 5 },
+    { "id": "summary", "name": "Evidence summary generated", "evidenceName": "Summary", "required": true, "points": 5 },
+
+    { "id": "repro_hash", "name": "Reproducibility evidence present", "evidenceName": "Reproducibility", "required": false, "points": 20 },
+    { "id": "tests", "name": "Test results present", "evidenceName": "TestResults", "required": false, "points": 10 },
+    { "id": "provenance", "name": "Provenance evidence present", "evidenceName": "Provenance", "required": false, "points": 25 }
+  ]
+}

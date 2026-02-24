@@ -1,5 +1,5 @@
 {
-  "GeneratedAt": "2026-02-24T17:55:11.3751+00:00",
+  "GeneratedAt": "2026-02-24T19:03:23.845652+00:00",
   "ToolVersion": "1.0.0.0",
   "Items": [
     {
@@ -24,18 +24,39 @@
       "Status": "ok"
     },
     {
-      "Name": "Reproducibility Hash #1",
-      "RelativePath": "../artifacts/release1.sha256",
-      "Exists": false,
-      "SizeBytes": 0,
-      "Status": "missing"
-    },
-    {
       "Name": "Manifest",
       "RelativePath": "evidence-manifest.json",
-      "Exists": false,
-      "SizeBytes": 0,
-      "Status": "missing"
+      "Exists": true,
+      "SizeBytes": 257,
+      "Status": "ok"
+    },
+    {
+      "Name": "Summary",
+      "RelativePath": "EvidenceSummary.md",
+      "Exists": true,
+      "SizeBytes": 90,
+      "Status": "ok"
+    },
+    {
+      "Name": "TestResults",
+      "RelativePath": "tests",
+      "Exists": true,
+      "SizeBytes": 1829,
+      "Status": "ok"
+    },
+    {
+      "Name": "Reproducibility",
+      "RelativePath": "reproducibility",
+      "Exists": true,
+      "SizeBytes": 3430,
+      "Status": "ok"
+    },
+    {
+      "Name": "Provenance",
+      "RelativePath": "provenance",
+      "Exists": true,
+      "SizeBytes": 141,
+      "Status": "ok"
     }
   ]
 }

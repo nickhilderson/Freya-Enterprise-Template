@@ -21,6 +21,15 @@ jobs:
       SOLUTION_PATH: templates/FreyaTemplate/Freya.Template.sln
       API_PROJECT_PATH: templates/FreyaTemplate/src/Project.Api/Project.Api.csproj
 
+      # Provenance metadata for Evidence Pack
+      FREYA_REPO: ${{ github.repository }}
+      FREYA_SHA: ${{ github.sha }}
+      FREYA_REF: ${{ github.ref }}
+      FREYA_RUN_ID: ${{ github.run_id }}
+      FREYA_RUN_ATTEMPT: ${{ github.run_attempt }}
+      FREYA_ACTOR: ${{ github.actor }}
+      FREYA_WORKFLOW: ${{ github.workflow }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4

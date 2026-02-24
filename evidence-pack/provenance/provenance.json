@@ -1,0 +1,9 @@
+{
+  "repo": "local/test",
+  "sha": "dev",
+  "ref": "local",
+  "run_id": "0",
+  "run_attempt": "1",
+  "actor": "nick",
+  "workflow": "local"
+}

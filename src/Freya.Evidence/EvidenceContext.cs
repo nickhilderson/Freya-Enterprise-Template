@@ -31,4 +31,11 @@ public sealed class EvidenceContext
     ///     Defaults to 2 bytes to treat "{}" as effectively empty for our purposes.
     /// </summary>
     public long MinimumJsonBytes { get; init; } = 3; // "{}" is 2 bytes; 3 means "must be more than {}"
+    
+    /// <summary>
+    /// Optional provenance metadata to include in the evidence pack.
+    /// CI typically provides this (e.g., GitHub Actions).
+    /// </summary>
+    public IReadOnlyDictionary<string, string> Provenance { get; init; }
+        = new Dictionary<string, string>();
 }

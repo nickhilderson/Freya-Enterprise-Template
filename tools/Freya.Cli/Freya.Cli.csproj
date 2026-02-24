@@ -2,6 +2,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Freya.Evidence\Freya.Evidence.csproj"/>
+        <ProjectReference Include="..\..\src\Freya.Scoring\Freya.Scoring.csproj" />
     </ItemGroup>
 
     <PropertyGroup>

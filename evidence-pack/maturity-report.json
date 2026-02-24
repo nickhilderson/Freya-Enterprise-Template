@@ -1,0 +1,90 @@
+{
+  "GeneratedAt": "2026-02-24T19:03:23.861482+00:00",
+  "ToolVersion": "1.0.0.0",
+  "Score": 100,
+  "MaxScore": 100,
+  "Level": "Level 5 - Provenance \u0026 Attested",
+  "Controls": [
+    {
+      "Id": "sbom",
+      "Name": "SBOM present",
+      "EvidenceName": "SBOM",
+      "Required": true,
+      "PointsAvailable": 15,
+      "PointsAwarded": 15,
+      "Status": "ok",
+      "Achieved": true
+    },
+    {
+      "Id": "deps",
+      "Name": "Dependency inventory present",
+      "EvidenceName": "Dependencies",
+      "Required": true,
+      "PointsAvailable": 10,
+      "PointsAwarded": 10,
+      "Status": "ok",
+      "Achieved": true
+    },
+    {
+      "Id": "licenses",
+      "Name": "License inventory present",
+      "EvidenceName": "Licenses",
+      "Required": true,
+      "PointsAvailable": 10,
+      "PointsAwarded": 10,
+      "Status": "ok",
+      "Achieved": true
+    },
+    {
+      "Id": "manifest",
+      "Name": "Evidence manifest generated",
+      "EvidenceName": "Manifest",
+      "Required": true,
+      "PointsAvailable": 5,
+      "PointsAwarded": 5,
+      "Status": "ok",
+      "Achieved": true
+    },
+    {
+      "Id": "summary",
+      "Name": "Evidence summary generated",
+      "EvidenceName": "Summary",
+      "Required": true,
+      "PointsAvailable": 5,
+      "PointsAwarded": 5,
+      "Status": "ok",
+      "Achieved": true
+    },
+    {
+      "Id": "repro_hash",
+      "Name": "Reproducibility evidence present",
+      "EvidenceName": "Reproducibility",
+      "Required": false,
+      "PointsAvailable": 20,
+      "PointsAwarded": 20,
+      "Status": "ok",
+      "Achieved": true
+    },
+    {
+      "Id": "tests",
+      "Name": "Test results present",
+      "EvidenceName": "TestResults",
+      "Required": false,
+      "PointsAvailable": 10,
+      "PointsAwarded": 10,
+      "Status": "ok",
+      "Achieved": true
+    },
+    {
+      "Id": "provenance",
+      "Name": "Provenance evidence present",
+      "EvidenceName": "Provenance",
+      "Required": false,
+      "PointsAvailable": 25,
+      "PointsAwarded": 25,
+      "Status": "ok",
+      "Achieved": true
+    }
+  ],
+  "MissingRequiredControls": []
+}

@@ -10,12 +10,6 @@
         "dependencies": {
           "Freya.Core": "[1.0.0, )"
         }
-      },
-      "freya.scoring": {
-        "type": "Project",
-        "dependencies": {
-          "Freya.Evidence": "[1.0.0, )"
-        }
       }
     }
   }

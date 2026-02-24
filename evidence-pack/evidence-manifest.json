@@ -1,10 +1,13 @@
 {
-  "GeneratedAt": "2026-02-24T17:55:11.351749+00:00",
+  "GeneratedAt": "2026-02-24T19:03:23.806101+00:00",
   "ToolVersion": "1.0.0.0",
   "Collectors": [
     "SBOM Collector",
     "Dependency Collector",
     "License Collector",
-    "Summary Collector"
+    "TestResults Collector",
+    "Reproducibility Collector",
+    "Provenance Collector",
+    "Summary"
   ]
 }
