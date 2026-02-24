@@ -1,0 +1,41 @@
+{
+  "GeneratedAt": "2026-02-24T17:55:11.3751+00:00",
+  "ToolVersion": "1.0.0.0",
+  "Items": [
+    {
+      "Name": "SBOM",
+      "RelativePath": "sbom/bom.json",
+      "Exists": true,
+      "SizeBytes": 3,
+      "Status": "ok"
+    },
+    {
+      "Name": "Dependencies",
+      "RelativePath": "dependencies/dependencies.json",
+      "Exists": true,
+      "SizeBytes": 3,
+      "Status": "ok"
+    },
+    {
+      "Name": "Licenses",
+      "RelativePath": "licenses/packages.json",
+      "Exists": true,
+      "SizeBytes": 3,
+      "Status": "ok"
+    },
+    {
+      "Name": "Reproducibility Hash #1",
+      "RelativePath": "../artifacts/release1.sha256",
+      "Exists": false,
+      "SizeBytes": 0,
+      "Status": "missing"
+    },
+    {
+      "Name": "Manifest",
+      "RelativePath": "evidence-manifest.json",
+      "Exists": false,
+      "SizeBytes": 0,
+      "Status": "missing"
+    }
+  ]
+}

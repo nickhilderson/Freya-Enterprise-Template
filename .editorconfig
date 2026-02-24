@@ -3,4 +3,3 @@ root = true
 [*.cs]
 dotnet_diagnostic.IDE0005.severity = warning
 dotnet_diagnostic.IDE0060.severity = warning
-dotnet_diagnostic.IDE0160.severity = warning

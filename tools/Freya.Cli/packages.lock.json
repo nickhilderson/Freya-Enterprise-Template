@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "freya.core": {
+        "type": "Project"
+      },
+      "freya.evidence": {
+        "type": "Project",
+        "dependencies": {
+          "Freya.Core": "[1.0.0, )"
+        }
+      }
+    }
+  }
+}

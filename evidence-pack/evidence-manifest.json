@@ -1,0 +1,10 @@
+{
+  "GeneratedAt": "2026-02-24T17:55:11.351749+00:00",
+  "ToolVersion": "1.0.0.0",
+  "Collectors": [
+    "SBOM Collector",
+    "Dependency Collector",
+    "License Collector",
+    "Summary Collector"
+  ]
+}

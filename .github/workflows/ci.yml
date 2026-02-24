@@ -212,6 +212,21 @@ jobs:
             artifacts/release2.sha256
           if-no-files-found: warn
 
+      - name: Generate evidence pack (Freya CLI, strict)
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf evidence-pack
+          dotnet run --project tools/Freya.Cli -- ./artifacts ./evidence-pack true
+
+      - name: Upload evidence pack
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-pack
+          path: evidence-pack
+          if-no-files-found: error
+          
       - name: Generate SLSA provenance attestation
         uses: actions/attest-build-provenance@v1
         with:
