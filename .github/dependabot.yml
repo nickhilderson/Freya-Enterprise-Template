@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # NuGet (.NET) - scan de volledige repo op .csproj/.props
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "security"
+    ignore:
+    # Optional: ignore prereleases by default
+    # - dependency-name: "*"
+    #   versions: ["*-*"]
+
+  # GitHub Actions updates (workflow actions versions)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "ci"
+      - "dependencies"
