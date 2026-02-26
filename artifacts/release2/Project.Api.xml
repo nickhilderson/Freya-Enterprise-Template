@@ -4,6 +4,61 @@
         <name>Project.Api</name>
     </assembly>
     <members>
+        <member name="T:Project.Api.Extensions.SecurityHeadersExtensions">
+            <summary>
+                Adds a hardened set of HTTP security headers for enterprise-grade APIs.
+            </summary>
+        </member>
+        <member name="M:Project.Api.Extensions.SecurityHeadersExtensions.UseFreyaEnterpriseSecurityHeaders(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.Extensions.Hosting.IHostEnvironment,System.Action{Project.Api.Extensions.FreyaSecurityHeadersOptions})">
+            <summary>
+                Adds enterprise security headers (CSP, clickjacking protection, HSTS in production, etc.).
+                Use this early in the pipeline (before endpoints).
+            </summary>
+        </member>
+        <member name="T:Project.Api.Extensions.FreyaSecurityHeadersOptions">
+            <summary>
+                Options for configuring Freya enterprise security headers.
+            </summary>
+        </member>
+        <member name="P:Project.Api.Extensions.FreyaSecurityHeadersOptions.EnableHsts">
+            <summary>
+                Enables HTTP Strict Transport Security (HSTS). Only applied in production.
+                Ensure HTTPS is enforced at the edge/reverse proxy before enabling.
+            </summary>
+        </member>
+        <member name="P:Project.Api.Extensions.FreyaSecurityHeadersOptions.ContentSecurityPolicy">
+            <summary>
+                CSP header value. For APIs, the safest default is to allow nothing and only set frame ancestors.
+                If you host Swagger UI, you may need to relax this for swagger routes.
+            </summary>
+        </member>
+        <member name="P:Project.Api.Extensions.FreyaSecurityHeadersOptions.XFrameOptions">
+            <summary>
+                Legacy clickjacking header. DENY is strongest.
+            </summary>
+        </member>
+        <member name="P:Project.Api.Extensions.FreyaSecurityHeadersOptions.ReferrerPolicy">
+            <summary>
+                Referrer-Policy header value.
+            </summary>
+        </member>
+        <member name="P:Project.Api.Extensions.FreyaSecurityHeadersOptions.PermissionsPolicy">
+            <summary>
+                Permissions-Policy header value. API-safe default disables sensitive features.
+            </summary>
+        </member>
+        <member name="P:Project.Api.Extensions.FreyaSecurityHeadersOptions.CrossOriginOpenerPolicy">
+            <summary>
+                COOP header. A good default is same-origin for apps with UI; for pure APIs this is optional.
+                If you serve Swagger UI, this can stay.
+            </summary>
+        </member>
+        <member name="P:Project.Api.Extensions.FreyaSecurityHeadersOptions.CrossOriginResourcePolicy">
+            <summary>
+                CORP header. Helps prevent other sites from loading your resources cross-origin.
+                For APIs, 'same-site' is a safe middle ground.
+            </summary>
+        </member>
         <member name="T:Program">
             <summary>
             Auto-generated public partial Program class for top-level statement apps.
